@@ -30,7 +30,7 @@ puts "--- GermanShepherd class ---------"
 
 class GermanShepherd < Dog
   def eat(food)
-    super(food)
+    super
   end
 end
 
