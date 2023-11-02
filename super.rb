@@ -56,3 +56,42 @@ end
 
 puts "--- John class ---------"
 puts John.new.eat("porridge", "baked turkey")       # eating porridge / eating baked turkey as well
+
+# Fourth case
+
+class King
+  def owns
+    "The king owns the kingdom!"
+  end
+end
+
+puts "--- King class ---------"
+puts King.new.owns                       # The king owns the kingdom!
+
+class People < King
+  def owns(message)
+    super()
+  end
+end
+
+puts "--- People class ---------"
+puts People.new.owns("People own nothing") # The king owns the kingdom!
+
+
+# We can change parent method using yield 😮
+# Super with blocks
+
+class Message
+  def message
+    yield
+  end
+end
+
+class Letter < Message
+  def message
+    super
+  end
+end
+
+puts "--- Letter class ---------"
+puts Letter.new.message { print "That is a Letter" } # That is a Letter
