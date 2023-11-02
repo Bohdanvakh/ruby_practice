@@ -70,3 +70,35 @@ puts person.do_step
 
 # It is better to use composition when your hierarchy represents a HAS-A relationship.
 # Composition breaks up functionality into distinct responsibilities.
+
+# One more example of composition
+
+class Engine
+  def initialize(hp)
+    @hp = hp
+  end
+
+  def start
+    puts "Engine is working"
+  end
+end
+
+class Car
+  def initialize(make, model, engine_hp)
+    @make = make
+    @model = model
+    @engine = Engine.new(engine_hp)
+  end
+
+  def start
+    @engine.start
+  end
+
+  def car_info
+    puts "Car: #{@make}, #{@model}"
+  end
+end
+
+my_car = Car.new("Mercedes-Benz", "C-class", 640)
+my_car.car_info          # Car: Mercedes-Benz, C-class, 640
+my_car.start             # Engine is working
