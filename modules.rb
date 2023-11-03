@@ -36,6 +36,30 @@ end
 puts Comment.new.comment                 # Comment from the module
 print Comment.ancestors                  # [Commentable, Comment, Object, PP::ObjectMixin, Kernel, BasicObject]
 
+# Another example
+
+module SwordModule
+  def equipment
+    super << "sword"
+  end
+end
+
+class Knight
+  prepend SwordModule
+
+  def equipment
+    %w[shield]
+  end
+end
+
+puts "\n"
+
+artur = Knight.new
+print artur.equipment
+puts "\n"
+
+print Knight.ancestors
+
 # Using extend
 
 puts "\n--- extend ---------"
