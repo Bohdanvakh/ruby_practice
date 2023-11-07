@@ -54,8 +54,8 @@ end
 
 puts "\n"
 
-artur = Knight.new
-print artur.equipment
+arthur = Knight.new
+print arthur.equipment
 puts "\n"
 
 print Knight.ancestors
