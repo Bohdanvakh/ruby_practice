@@ -48,7 +48,7 @@ puts "\n/////////////////////////////////////"
 puts "\n"
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# ENCAPSULATION explanation - https://www.youtube.com/watch?v=SwAkGw4K8D4&t=87s
+# ENCAPSULATION
 
 # Public
 
@@ -221,3 +221,87 @@ obj.public_method_with_self_protected
 sub_obj = MySubclass.new
 sub_obj.subclass_method # => "This is a protected method"
 sub_obj.another_method # => "This is a private method"
+
+puts "\n/////////////////////////////////////"
+puts "\n"
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# POLYMORPHISM using inheritance
+
+# explanation ---------------------> https://www.geeksforgeeks.org/polymorphism-in-ruby/
+
+class Vehicle
+  def tyreType
+    puts "Heavy Car"
+  end
+end
+
+class Car < Vehicle
+  def tyreType
+    puts "Small Car"
+  end
+end
+
+class Truck < Vehicle
+  def tyreType
+    puts "Big Car"
+  end
+end
+
+vehicle = Vehicle.new
+vehicle.tyreType
+
+vehicle = Car.new
+vehicle.tyreType
+
+vehicle = Truck.new
+vehicle.tyreType
+
+puts "~~~~~~~~~"
+
+# POLYMORPHISM using Duck-Typing
+
+class Hotel
+  def enters
+    puts "A customer enters"
+  end
+
+  def type(customer)
+    customer.type
+  end
+
+  def room(customer)
+    customer.room
+  end
+end
+
+class Single
+  def type
+    puts "Room is on the fourth floor."
+  end
+
+  def room
+    puts "Per night stay is 5 thousand"
+  end
+end
+
+class Couple
+  def type
+    puts "Room is on the second floor."
+  end
+
+  def room
+    puts "Per night stay is 8 thousand"
+  end
+end
+
+hotel = Hotel.new
+puts "This visitor is Single. <====="
+customer = Couple.new
+hotel.type(customer)
+hotel.room(customer)
+
+puts "This visitor is Couple. <====="
+customer = Single.new
+hotel.type(customer)
+hotel.room(customer)
