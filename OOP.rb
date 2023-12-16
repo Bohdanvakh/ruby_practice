@@ -210,6 +210,8 @@ puts "\n"
 obj = MyClass.new
 obj.public_method
 
+# Since Ruby 2.7 Ruby 2.7+ allows private methods to be called with self as receiver
+
 obj.public_method_with_self_private
 obj.public_method_with_self_protected
 
