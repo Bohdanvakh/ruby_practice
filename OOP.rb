@@ -305,3 +305,33 @@ puts "This visitor is Couple. <====="
 customer = Single.new
 hotel.type(customer)
 hotel.room(customer)
+
+puts "\n/////////////////////////////////////"
+puts "\n"
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# INHERITANCE explanation -------------> https://www.geeksforgeeks.org/ruby-inheritance/
+
+class GeeksforGeeks
+  def initialize
+      puts "This is Superclass"
+  end
+
+  def super_method
+      puts "Method of superclass"
+  end
+end
+
+class Sudo_Placement < GeeksforGeeks
+  def initialize
+     puts "This is Subclass"
+  end
+end
+
+GeeksforGeeks.new
+sub_obj = Sudo_Placement.new
+sub_obj.super_method
+
+puts "\n/////////////////////////////////////"
+puts "\n"
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
