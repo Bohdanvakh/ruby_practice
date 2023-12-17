@@ -55,10 +55,10 @@ end
 puts "\n"
 
 arthur = Knight.new
-print arthur.equipment
+print arthur.equipment # ["shield", "sword"]
 puts "\n"
 
-print Knight.ancestors
+print Knight.ancestors # [SwordModule, Knight, Object, Kernel, BasicObject] (module is before the class because we use prepend)
 
 # Using extend
 
@@ -76,3 +76,8 @@ end
 
 puts SaySomething.hello                  # Hello from the module
 print SaySomething.ancestors             # [SaySomething, Object, PP::ObjectMixin, Kernel, BasicObject]
+
+# This is the difference between the prepend and extend methods.
+# They are both before the class in the list of ancestors, but
+# a class can use prepend module methods, such as instance,
+# instead of extend module methods that can be used by the class, like class methods 😊
