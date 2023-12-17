@@ -40,3 +40,29 @@ end
 
 Student.new.hi # calls the class method
 Student.hi # but we can call the module method as the class method (not instance method)
+
+module UserInfo
+  def show
+    puts "My name is #{@name}"
+    puts "My age is #{@age}"
+  end
+end
+
+class User
+  # include UserInfo # <---- will return the class method show
+  # prepend UserInfo # <---- will return the module method show
+  extend UserInfo # <--- will return the class method
+
+  def initialize(name, age)
+    @name = name
+    @age = age
+  end
+
+  def show
+    puts "My name is #{@name} and my age is #{@age}"
+  end
+end
+
+user = User.new("John", 22)
+user.show
+# User.show # <--- will return the module method
