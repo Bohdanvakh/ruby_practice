@@ -50,8 +50,8 @@ end
 
 class User
   # include UserInfo # <---- will return the class method show
-  # prepend UserInfo # <---- will return the module method show
-  extend UserInfo # <--- will return the class method
+  prepend UserInfo # <---- will return the module method show
+  # extend UserInfo # <--- will return the class method
 
   def initialize(name, age)
     @name = name
