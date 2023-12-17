@@ -15,3 +15,11 @@ def division(*a, b)
 end
 
 division(1, 0)
+
+def divide_numbers(x, y)
+  raise ArgumentError, 'Cannot divide by zero' if y.zero?
+
+  x / y
+end
+
+puts divide_numbers(10, 0)
