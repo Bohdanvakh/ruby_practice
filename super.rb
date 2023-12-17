@@ -95,3 +95,35 @@ end
 
 puts "--- Letter class ---------"
 puts Letter.new.message { print "That is a Letter" } # That is a Letter
+
+class Parent
+  def greeting(name)
+    puts "Hello, #{name}!"
+  end
+end
+
+class Child < Parent
+  def greeting(name)
+    super  # calls the greeting method in the parent class
+  end
+end
+
+child = Child.new
+child.greeting("John")  # Hello, John!
+
+
+class ParentTwo
+  def greeting(name)
+    puts "Hello, #{name}!"
+  end
+end
+
+class ChildTwo < ParentTwo
+  def greeting(name)
+    # super()  # calls method greeting in the parent class without arguments (BUT IT WILL RETURN AN ERROR Wrong number of arguments)
+    super(name)  # calls method greeting in the parent class with arguments
+  end
+end
+
+child = ChildTwo.new
+child.greeting("Logan")  # Hello, !
