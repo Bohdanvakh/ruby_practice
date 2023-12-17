@@ -13,7 +13,7 @@ class Person
 end
 
 puts Person.new.hello                    # Hello man
-print Person.ancestors                   # [Person, Greeting, Object, PP::ObjectMixin, Kernel, BasicObject]
+print Person.ancestors                   # [Person, Greeting, Object, PP::ObjectMixin, Kernel, BasicObject] <== means that Greeting module methods are available
 
 # Using prepend
 
