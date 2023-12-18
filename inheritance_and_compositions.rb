@@ -1,3 +1,6 @@
+# sources ---> https://medium.com/@MinimalGhost/inheritance-versus-composition-in-ruby-4ff52beb5e86
+# sources ---> https://engineering.entelo.com/understanding-inheritance-and-composition-in-ruby-edc46c0f96c7
+
 # Single Inheritance
 
 class Parent
