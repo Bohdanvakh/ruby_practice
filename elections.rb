@@ -20,9 +20,12 @@ class Candidate
 
   protected
 
-  def self.create_candidates_list(candidates_data)
-    candidates_data.each do |data|
-      Candidate.new(*data)
+  def self.create_candidates_list(file_path)
+    json_data = File.read(file_path)
+    data = JSON.parse(json_data)
+
+    data.each do |first_name, last_name, political_party|
+      Candidate.new(first_name, last_name, political_party)
     end
   end
 end
@@ -74,16 +77,5 @@ def see_results
   end
 end
 
-candidates = [
-  ["John", "Doe", "Circus"],
-  ["Lorem", "Ipsum", "Homeland"],
-  ["Andrew", "Qwerty", "New Way"],
-  ["John", "Snow", "Night watch"],
-  ["Chan", "Chan", "China Town"]
-]
-
-file = File.open("people.json")
-
-Candidate.create_candidates_list(candidates)
-
+Candidate.create_candidates_list('candidates.json')
 Person.create_electorate_list('people.json')
