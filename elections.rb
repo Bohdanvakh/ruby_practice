@@ -1,32 +1,32 @@
 require 'pry'
 require 'json'
 
-CANDIDATES = []
 PEOPLE = []
-ELECTIONS = {}
 
 class Candidate
   attr_accessor :first_name, :last_name, :political_party
-
-  @@candidates = CANDIDATES
 
   def initialize(first_name, last_name, political_party)
     @first_name = first_name
     @last_name = last_name
     @political_party = political_party
 
-    @@candidates << self
+    save_to_json
   end
 
-  protected
+  private
 
-  def self.create_candidates_list(file_path)
-    json_data = File.read(file_path)
-    data = JSON.parse(json_data)
+  def save_to_json
+    candidates_data = JSON.parse(File.read('candidates.json'))
+    candidates_data << to_hash
 
-    data.each do |first_name, last_name, political_party|
-      Candidate.new(first_name, last_name, political_party)
+    File.open('candidates.json', 'w') do |f|
+      f.puts JSON.pretty_generate(candidates_data)
     end
+  end
+
+  def to_hash
+    { first_name: @first_name, last_name: @last_name, political_party: @political_party }
   end
 end
 
@@ -55,21 +55,29 @@ class Person
 end
 
 def choose
-  @elections = ELECTIONS
+  @elections = JSON.parse(File.read('elections.json'))
 
   PEOPLE.each do |person|
     person_name = "#{person.first_name} #{person.last_name}"
-    @elections[person_name] = CANDIDATES.sample
+    candidates = JSON.parse(File.read('candidates.json'))
+
+    @elections << { person: person_name, result: candidates.sample }
+  end
+
+  File.open('elections.json', 'w') do |f|
+    f.puts JSON.pretty_generate(@elections)
   end
 end
 
 def see_results
-  results = Hash[ELECTIONS.values.group_by{|i| i}.map {
-    |key, value| ["#{key.first_name} #{key.last_name}", value.count]
-  }.sort_by { |k, v| -v }]
+  elections = JSON.parse(File.read('elections.json'))
 
-  result_number = ELECTIONS.count
+  results = elections.group_by do |entry|
+    person_name = entry['person_name'] || 'Unknown'
+    "#{person_name} #{entry['result']['last_name']}"
+  end.transform_values(&:count).sort_by { |_, v| -v }
 
+  result_number = elections.count
   puts "Elections results:"
 
   results.each do |key, value|
@@ -77,5 +85,4 @@ def see_results
   end
 end
 
-Candidate.create_candidates_list('candidates.json')
 Person.create_electorate_list('people.json')
