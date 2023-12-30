@@ -1,2 +1,12 @@
 [
+  {
+    "first_name": "John",
+    "last_name": "Doe",
+    "political_party": "Lorem"
+  },
+  {
+    "first_name": "Logan",
+    "last_name": "Paul",
+    "political_party": "Lorem Ipsum"
+  }
 ]
