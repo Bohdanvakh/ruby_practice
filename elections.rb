@@ -1,32 +1,33 @@
 require 'pry'
 require 'json'
 
-CANDIDATES = []
 PEOPLE = []
 ELECTIONS = {}
 
 class Candidate
   attr_accessor :first_name, :last_name, :political_party
 
-  @@candidates = CANDIDATES
-
   def initialize(first_name, last_name, political_party)
     @first_name = first_name
     @last_name = last_name
     @political_party = political_party
 
-    @@candidates << self
+    save_to_json
   end
 
-  protected
+  private
 
-  def self.create_candidates_list(file_path)
-    json_data = File.read(file_path)
-    data = JSON.parse(json_data)
+  def save_to_json
+    candidates_data = JSON.parse(File.read('candidates.json'))
+    candidates_data << to_hash
 
-    data.each do |first_name, last_name, political_party|
-      Candidate.new(first_name, last_name, political_party)
+    File.open('candidates.json', 'w') do |f|
+      f.puts JSON.pretty_generate(candidates_data)
     end
+  end
+
+  def to_hash
+    { first_name: @first_name, last_name: @last_name, political_party: @political_party }
   end
 end
 
@@ -59,13 +60,15 @@ def choose
 
   PEOPLE.each do |person|
     person_name = "#{person.first_name} #{person.last_name}"
-    @elections[person_name] = CANDIDATES.sample
+
+    candidates = JSON.parse(File.read('candidates.json'))
+    @elections[person_name] = candidates.sample
   end
 end
 
 def see_results
   results = Hash[ELECTIONS.values.group_by{|i| i}.map {
-    |key, value| ["#{key.first_name} #{key.last_name}", value.count]
+    |key, value| ["#{key['first_name']} #{key['last_name']}", value.count]
   }.sort_by { |k, v| -v }]
 
   result_number = ELECTIONS.count
@@ -77,5 +80,4 @@ def see_results
   end
 end
 
-Candidate.create_candidates_list('candidates.json')
 Person.create_electorate_list('people.json')
