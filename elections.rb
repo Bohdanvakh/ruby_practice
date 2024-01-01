@@ -1,8 +1,6 @@
 require 'pry'
 require 'json'
 
-PEOPLE = []
-
 class Candidate
   attr_accessor :first_name, :last_name, :political_party
 
@@ -31,15 +29,28 @@ class Candidate
 end
 
 class Person
-  @@people = PEOPLE
-
   attr_accessor :first_name, :last_name
 
   def initialize(first_name, last_name)
     @first_name = first_name
     @last_name = last_name
 
-    @@people << self
+    save_to_json
+  end
+
+  private
+
+  def save_to_json
+    people_data = JSON.parse(File.read('people.json'))
+    people_data << to_hash
+
+    File.open('people.json', 'w') do |f|
+      f.puts JSON.pretty_generate(people_data)
+    end
+  end
+
+  def to_hash
+    { first_name: @first_name, last_name: @last_name }
   end
 
   protected
@@ -55,13 +66,15 @@ class Person
 end
 
 def choose
+  people = JSON.parse(File.read('people.json'))
   @elections = JSON.parse(File.read('elections.json'))
 
-  PEOPLE.each do |person|
-    person_name = "#{person.first_name} #{person.last_name}"
+  people.each do |person|
+    person_name = "#{person['first_name']} #{person['last_name']}"
     candidates = JSON.parse(File.read('candidates.json'))
+    result_hash = { person: person_name, result: candidates.sample }
 
-    @elections << { person: person_name, result: candidates.sample }
+    @elections << result_hash
   end
 
   File.open('elections.json', 'w') do |f|
@@ -73,8 +86,7 @@ def see_results
   elections = JSON.parse(File.read('elections.json'))
 
   results = elections.group_by do |entry|
-    person_name = entry['person_name'] || 'Unknown'
-    "#{person_name} #{entry['result']['last_name']}"
+    "#{entry['result']['first_name']} #{entry['result']['last_name']}"
   end.transform_values(&:count).sort_by { |_, v| -v }
 
   result_number = elections.count
@@ -84,5 +96,3 @@ def see_results
     puts "#{key.to_s} --- #{value.to_f / result_number * 100}%"
   end
 end
-
-Person.create_electorate_list('people.json')
