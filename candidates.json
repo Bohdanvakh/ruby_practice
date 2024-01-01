@@ -1,12 +1,17 @@
 [
   {
-    "first_name": "John",
-    "last_name": "Doe",
-    "political_party": "Lorem"
+    "first_name": "Adam",
+    "last_name": "Smith",
+    "political_party": "Lorem Ipsum"
+  },
+  {
+    "first_name": "Qwerty",
+    "last_name": "Payyahu",
+    "political_party": "Zna"
   },
   {
     "first_name": "Logan",
     "last_name": "Paul",
-    "political_party": "Lorem Ipsum"
+    "political_party": "Lorem"
   }
 ]
