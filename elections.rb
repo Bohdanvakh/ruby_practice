@@ -1,7 +1,13 @@
+require './elections_modules.rb'
 require 'pry'
 require 'json'
 
-class Candidate
+class Main
+  include SaveToJson
+  include ToHash
+end
+
+class Candidate < Main
   attr_accessor :first_name, :last_name, :political_party
 
   def initialize(first_name, last_name, political_party)
@@ -9,59 +15,22 @@ class Candidate
     @last_name = last_name
     @political_party = political_party
 
-    save_to_json
-  end
+    attributes = { first_name: first_name, last_name: last_name, political_party: political_party }
 
-  private
-
-  def save_to_json
-    candidates_data = JSON.parse(File.read('candidates.json'))
-    candidates_data << to_hash
-
-    File.open('candidates.json', 'w') do |f|
-      f.puts JSON.pretty_generate(candidates_data)
-    end
-  end
-
-  def to_hash
-    { first_name: @first_name, last_name: @last_name, political_party: @political_party }
+    save_to_json('candidates.json', attributes)
   end
 end
 
-class Person
+class Person < Main
   attr_accessor :first_name, :last_name
 
   def initialize(first_name, last_name)
     @first_name = first_name
     @last_name = last_name
 
-    save_to_json
-  end
+    attributes = { first_name: first_name, last_name: last_name }
 
-  private
-
-  def save_to_json
-    people_data = JSON.parse(File.read('people.json'))
-    people_data << to_hash
-
-    File.open('people.json', 'w') do |f|
-      f.puts JSON.pretty_generate(people_data)
-    end
-  end
-
-  def to_hash
-    { first_name: @first_name, last_name: @last_name }
-  end
-
-  protected
-
-  def self.create_electorate_list(file_path)
-    json_data = File.read(file_path)
-    data = JSON.parse(json_data)
-
-    data.each do |first_name, last_name|
-      Person.new(first_name, last_name)
-    end
+    save_to_json('people.json', attributes)
   end
 end
 
