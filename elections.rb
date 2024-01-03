@@ -1,5 +1,4 @@
 require './elections_modules.rb'
-require './voting_modules.rb'
 require 'pry'
 require 'json'
 
@@ -79,5 +78,14 @@ def see_results
     puts "Candidate that have got more than 50% \n---> #{elections_winner[0]} with #{elections_winner[1]} votes"
   else
     puts "The first round of elections is over. The second round of elections is announced"
+  end
+end
+
+def clean_elections(file)
+  elections = JSON.parse(File.read(file))
+  elections.clear()
+
+  File.open(file, 'w') do |f|
+    f.puts JSON.pretty_generate(elections)
   end
 end
