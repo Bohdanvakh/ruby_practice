@@ -34,58 +34,68 @@ class Person < Main
   end
 end
 
-def choose
-  people = JSON.parse(File.read('people.json'))
-  @elections = JSON.parse(File.read('elections.json'))
+class Elections
+  def choose
+    people = JSON.parse(File.read('people.json'))
+    @elections = JSON.parse(File.read('elections.json'))
 
-  people.each do |person|
-    person_name = "#{person['first_name']} #{person['last_name']}"
-    candidates = JSON.parse(File.read('candidates.json'))
-    result_hash = { person: person_name, result: candidates.sample }
+    people.each do |person|
+      person_name = "#{person['first_name']} #{person['last_name']}"
+      candidates = JSON.parse(File.read('candidates.json'))
+      result_hash = { person: person_name, result: candidates.sample }
 
-    @elections << result_hash
+      @elections << result_hash
+    end
+
+    File.open('elections.json', 'w') do |f|
+      f.puts JSON.pretty_generate(@elections)
+    end
+
+    see_results
   end
 
-  File.open('elections.json', 'w') do |f|
-    f.puts JSON.pretty_generate(@elections)
+  private
+
+  def see_results
+    elections = JSON.parse(File.read('elections.json'))
+
+    results = elections.group_by do |entry|
+      "#{entry['result']['first_name']} #{entry['result']['last_name']}"
+    end.transform_values(&:count).sort_by { |_, v| -v }
+
+    result_number = elections.count
+    puts "Elections results:"
+
+    @percentage_results = {}
+
+    results.each do |key, value|
+      candidate_results = "#{key.to_s} --- #{value.to_f / result_number * 100}%"
+
+      puts candidate_results
+
+      @percentage_results[key] = value.to_f / result_number * 100
+    end
+
+    elections_winner = @percentage_results.find { |key, value| value > 50 } # get a candidate with more than 50% of votes
+
+    if elections_winner
+      puts "The first round of elections is over"
+      puts "Candidate that have got more than 50% \n---> #{elections_winner[0]} with #{elections_winner[1]} votes"
+    else
+      puts "The first round of elections is over. The second round of elections is announced"
+
+      clean_elections('elections.json') # delete current elections results because of new round of electinos
+    end
+  end
+
+  def clean_elections(file)
+    elections = JSON.parse(File.read(file))
+    elections.clear()
+
+    File.open(file, 'w') do |f|
+      f.puts JSON.pretty_generate(elections)
+    end
   end
 end
 
-def see_results
-  elections = JSON.parse(File.read('elections.json'))
-
-  results = elections.group_by do |entry|
-    "#{entry['result']['first_name']} #{entry['result']['last_name']}"
-  end.transform_values(&:count).sort_by { |_, v| -v }
-
-  result_number = elections.count
-  puts "Elections results:"
-
-  @percentage_results = {}
-
-  results.each do |key, value|
-    candidate_results = "#{key.to_s} --- #{value.to_f / result_number * 100}%"
-
-    puts candidate_results
-
-    @percentage_results[key] = value.to_f / result_number * 100
-  end
-
-  elections_winner = @percentage_results.find { |key, value| value > 50 } # get a candidate with more than 50% of votes
-
-  if elections_winner
-    puts "The first round of elections is over"
-    puts "Candidate that have got more than 50% \n---> #{elections_winner[0]} with #{elections_winner[1]} votes"
-  else
-    puts "The first round of elections is over. The second round of elections is announced"
-  end
-end
-
-def clean_elections(file)
-  elections = JSON.parse(File.read(file))
-  elections.clear()
-
-  File.open(file, 'w') do |f|
-    f.puts JSON.pretty_generate(elections)
-  end
-end
+Elections.new.choose
