@@ -33,19 +33,8 @@ end
 
 class Elections < Main
   def choose
-    people = JSON.parse(File.read('people.json'))
-    @elections = JSON.parse(File.read('elections.json'))
-
-    people.each do |person|
-      person_name = "#{person['first_name']} #{person['last_name']}"
-      candidates = JSON.parse(File.read('candidates.json'))
-      result_hash = { person: person_name, result: candidates.sample }
-      @elections << result_hash
-    end
-
-    update_json('elections.json', @elections)
-
-    see_results
+    clean_json_file('top_two_candidates.json')
+    elections('candidates.json', 'people.json', 'elections.json')
   end
 
   private
@@ -74,23 +63,36 @@ class Elections < Main
 
     elections_winner = @percentage_results.find { |key, value| value > 50 } # get a candidate with more than 50% of votes
 
-    second_round?(elections_winner)
+    second_round_check(elections_winner, @percentage_results)
   end
 
-  def second_round?(winner)
+  def second_round_check(winner, elections_data)
     if winner
       puts "The first round of elections is over"
       puts "Candidate that have got more than 50% \n---> #{winner[0]} with #{winner[1]} votes"
     else
       puts "The first round of elections is over. The second round of elections is announced"
-      clean_elections('elections.json') # delete current elections results because of new round of electinos
+
+      take_top_two_candidates(@percentage_results)
+      clean_json_file('elections.json') # delete current elections results because of new round of electinos
+      elections('top_two_candidates.json', 'people.json', 'elections.json') # the secont round of elections
     end
   end
 
-  def clean_elections(file)
-    elections = JSON.parse(File.read(file))
-    elections.clear()
+  def take_top_two_candidates(elections_data)
+    candidates_data = JSON.parse(File.read('candidates.json'))
+    top_two_candidates = []
 
-    update_json(file, elections)
+    candidates_data.each do |candidate|
+      full_name = "#{candidate['first_name']} #{candidate['last_name']}"
+
+      if elections_data.key?(full_name)
+        top_two_candidates << { first_name: candidate['first_name'], last_name: candidate['last_name'] }
+      end
+    end
+
+    top_two_candidates = top_two_candidates.sort_by! { |candidate| elections_data["#{candidate['first_name']} #{candidate['last_name']}"] }[0..1]
+
+    update_json('top_two_candidates.json', top_two_candidates)
   end
 end
