@@ -74,7 +74,7 @@ class SaySomething
   extend SayHello
 end
 
-puts SaySomething.hello                  # Hello from the module
+puts SaySomething.hello                  # Hello from the module ( we can't call extended methods by an instance of the class )
 print SaySomething.ancestors             # [SaySomething, Object, PP::ObjectMixin, Kernel, BasicObject]
 
 # This is the difference between the prepend and extend methods.
